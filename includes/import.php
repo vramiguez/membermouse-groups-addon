@@ -132,6 +132,13 @@ $results	= $wpdb -> get_results($sql);
 				                	$userId = $user->ID;
 				                }
 
+								//get the membership associated to the membersgroup
+								$sql = "SELECT group_template_id FROM ".$wpdb -> prefix."group_sets WHERE group_leader = ".$leader_id;
+								$g_template_id = $wpdb->get_var($sql);
+
+								$sql = "SELECT member_memlevel FROM ".$wpdb -> prefix."group_items WHERE id = ".$g_template_id;
+								$mem_level = $wpdb -> get_var($sql);
+
 				                if( !is_wp_error( $userId ) ){	
 					                //verify if the user is already registered in the group
 					                $sql = "SELECT id FROM ".$wpdb -> prefix."group_sets_members WHERE group_id=".$group_id." AND member_id=".$userId;
@@ -141,6 +148,10 @@ $results	= $wpdb -> get_results($sql);
 					                	//register user in the group
 						                $sql	= "INSERT INTO ".$wpdb -> prefix."group_sets_members (id,group_id,member_id,createdDate,modifiedDate)VALUES('','".$group_id."','".$userId."',now(),now())";
 										$query	= $wpdb -> query($sql);
+										$status = MM_Status::$ACTIVE;
+
+										$sql = "INSERT INTO mm_user_data (wp_user_id,membership_level_id,status,first_name,last_name,phone) VALUES(".$userId.",".$mem_level.",".$status.",'".$first_name."','".$last_name."','".$phone."')";
+              							$query	= $wpdb -> query($sql);
 					                }
 					            }
 				            }
