@@ -60,7 +60,7 @@ $results	= $wpdb -> get_results($sql);
 			<th>Group Leader</th>
 			<th># of Members</th>
 			<th>Enrollment Link</th>
-			<th>Actions</th>
+			<th style="width:15%;">Actions</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -86,13 +86,18 @@ $results	= $wpdb -> get_results($sql);
 					<?php 
 					$editActionUrl = 'onclick="javascript:MGROUP.editGroupForm(\''.$res -> id.'\');"';
 					$deleteActionUrl = 'onclick="javascript:MGROUP.deleteGroupData(\''.$res -> id.'\');"';
+					$viewActionUrl = 'admin.php?page=membermouseviewgroup&leader_id='.$res -> group_leader;
 					?>
 					<?php echo MM_Utils::getEditIcon("Edit Group", 'margin-left:5px;', $editActionUrl); ?>
 					<?php if($res -> group_status == 1):?>
 						<a style="margin-left: 5px; cursor:pointer" title="Cancel Group" onclick="javascript:MGROUP.cancelGroup('<?php echo $res -> id;?>');" title="Cancel Group"><?php echo MM_Utils::getIcon('stop', 'red', '1.2em', '1px'); ?></a>
 					<?php else:?>
 						<?php echo MM_Utils::getDeleteIcon("Delete Group", 'margin-left:5px;', $deleteActionUrl); ?>
-					<?php endif;?>
+					<?php endif;?>					
+					<a href="<?php echo $viewActionUrl; ?>" title="View Group" class="group-button button-small">
+						<?php echo MM_Utils::getIcon('eye', '', '1.3em', '1px', '', 'margin-right:0px;'); ?>
+					</a>
+					
 				</td>
 			</tr>
 <?php	endforeach;?>	

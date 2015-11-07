@@ -109,6 +109,7 @@ if(!class_exists('MemberMouseGroupAddon')){
 			include_once(ABSPATH."wp-content/plugins/membermouse/includes/init.php");
 			add_menu_page("MemberMouse Groups","MM Groups",'list_users',"membermousegroupaddon",array(&$this,'MemberMouseGroupAddonAdminManagement'), MM_Utils::getImageUrl('mm-logo-svg-white'), '3.21');
 			add_submenu_page("membermousegroupaddon","Group Management Dashboard","Group Management Dashboard",'Group Leader',"membermousemanagegroup",array(&$this,"MemberMouseManageGroup"));
+			add_submenu_page("membermouseviewgroup","List Group Members","List Group Members",'Administrator',"membermouseviewgroup",array(&$this,"MemberMouseManageGroup"));
 		}
 		
 		function MemberMouseGroupPurchaseLinkShortcode(){
@@ -310,6 +311,11 @@ if(!class_exists('MemberMouseGroupAddon')){
 			$display_name 	= "Group Leader";
 			$capabilities	= array("read" => true,"membermouse_group_capability" => true);
 			add_role($role, $display_name, $capabilities);
+			
+			// gets the administrator role
+			$admin = get_role( 'administrator');
+			$admin->add_cap($capabilities);
+			
 		}
 		
 		function MemberMouseGroupRemoveRoll(){
@@ -356,6 +362,7 @@ if(!class_exists('MemberMouseGroupAddon')){
 
 		function MemberMouseManageGroup(){
 			include_once(dirname(__FILE__)."/includes/manage_groups.php");
+			include_once(dirname(__FILE__)."/includes/list_group_members.php");
 		}
 		
 		function MemberMouseGroupPagination($limit = 10, $count, $page, $start, $targetpage, $type="groups"){
@@ -439,7 +446,7 @@ if(!class_exists('MemberMouseGroupAddon')){
 			if(isset($data["cf_".$groupId]) && !empty($data["cf_".$groupId])):
 				$cf	= $data["cf_".$groupId];
 				$memberId	= $data["member_id"];
-				$groupName = (!empty($data["cf_4"])) ? $data["cf_4"] : 'Group';
+				$groupName = (!empty($data["cf_3"])) ? $data["cf_3"] : 'Group';
 				if(is_numeric($cf)):
 					$templateSql	= "SELECT id,group_size FROM ".$wpdb -> prefix."group_items WHERE id = '".$cf."'";
 					$templateResult	= $wpdb -> get_row($templateSql);
